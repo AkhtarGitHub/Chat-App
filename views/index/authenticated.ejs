@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Real-Time Chat</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/profile/<%= user.username %>">Profile</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+    <div class="main-content">
+      <h1>Welcome, <%= user.username %>!</h1>
+      <div id="chat-container">
+        <div id="messages">
+          <!-- Chat messages will be dynamically appended here -->
+        </div>
+        <form id="message-form" onsubmit="onMessageSent(event)">
+          <input
+            type="text"
+            id="message"
+            placeholder="Type a message..."
+            required
+          />
+          <button type="submit">Send</button>
+        </form>
+      </div>
+      <div id="online-users">
+        <h3>Online Users</h3>
+        <ul id="user-list">
+          <!-- Online users will be dynamically appended here -->
+        </ul>
+      </div>
+    </div>
+    <script src="/frontend.js"></script>
+    <script>
+      const webSocket = new WebSocket("ws://localhost:3000/ws");
+
+      webSocket.addEventListener("open", () => {
+        webSocket.send(
+          JSON.stringify({ type: "new-user", username: "<%= user.username %>" })
+        );
+      });
+
+      webSocket.addEventListener("message", (event) => {
+        const eventData = JSON.parse(event.data);
+
+        if (eventData.type === "chat-message") {
+          onNewMessageReceived(
+            eventData.sender,
+            eventData.timestamp,
+            eventData.message
+          );
+        } else if (eventData.type === "notification") {
+          addNotification(eventData.message);
+        } else if (eventData.type === "online-users") {
+          updateOnlineUsers(eventData.users);
+        }
+      });
+
+      function onNewMessageReceived(username, timestamp, message) {
+        const messageElement = document.createElement("div");
+        messageElement.textContent = `[${new Date(
+          timestamp
+        ).toLocaleTimeString()}] ${username}: ${message}`;
+        document.getElementById("messages").appendChild(messageElement);
+      }
+
+      function addNotification(message) {
+        const notificationElement = document.createElement("div");
+        notificationElement.textContent = message;
+        notificationElement.style.fontStyle = "italic";
+        notificationElement.style.color = "gray";
+        document.getElementById("messages").appendChild(notificationElement);
+      }
+
+      function updateOnlineUsers(users) {
+        const userList = document.getElementById("user-list");
+        userList.innerHTML = "";
+        users.forEach((user) => {
+          const userElement = document.createElement("li");
+          userElement.textContent = user;
+          userList.appendChild(userElement);
+        });
+      }
+
+      function onMessageSent(event) {
+        event.preventDefault();
+        const messageInput = document.getElementById("message");
+        const message = messageInput.value;
+        webSocket.send(JSON.stringify({ type: "chat-message", message }));
+        messageInput.value = "";
+      }
+    </script>
+  </body>
+</html>

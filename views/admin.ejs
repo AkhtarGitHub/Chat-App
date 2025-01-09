@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+    <div class="main-content">
+      <h1>Admin Dashboard</h1>
+      <table
+        border="1"
+        cellpadding="5"
+        cellspacing="0"
+        style="width: 100%; margin-top: 20px"
+      >
+        <thead>
+          <tr>
+            <th>Username</th>
+            <th>Role</th>
+            <th>Join Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach(user => { %>
+          <tr>
+            <td><%= user.username %></td>
+            <td><%= user.role %></td>
+            <td><%= new Date(user.joinDate).toLocaleDateString() %></td>
+            <td>
+              <% if (user.role !== 'admin') { %>
+              <form
+                action="/admin/ban/<%= user.username %>"
+                method="post"
+                style="display: inline"
+              >
+                <button
+                  type="submit"
+                  class="action-button"
+                  style="background-color: red; color: white"
+                >
+                  Ban
+                </button>
+              </form>
+              <% } else { %>
+              <span>Admin</span>
+              <% } %>
+            </td>
+          </tr>
+          <% }); %>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>

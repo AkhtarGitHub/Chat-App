@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User Profile</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+      </nav>
+    </header>
+    <div class="main-content">
+      <h1>Profile: <%= user.username %></h1>
+      <div class="profile-info">
+        <p><strong>Username:</strong> <%= user.username %></p>
+        <p>
+          <strong>Join Date:</strong> <%= new
+          Date(user.joinDate).toLocaleDateString() %>
+        </p>
+        <% if (user.role === 'admin') { %>
+        <p><strong>Role:</strong> Administrator</p>
+        <% } else { %>
+        <p><strong>Role:</strong> User</p>
+        <% } %>
+      </div>
+      <div>
+        <a href="/dashboard" class="action-button">Back to Dashboard</a>
+      </div>
+    </div>
+  </body>
+</html>

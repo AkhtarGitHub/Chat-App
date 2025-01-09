@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="main-content">
+      <h1>Login to Your Account</h1>
+      <form action="/login" method="post" style="width: 300px">
+        <!-- Display error message if login fails -->
+        <% if (errorMessage) { %>
+        <p class="error-message" style="color: red"><%= errorMessage %></p>
+        <% } %>
+        <div class="form-input-container">
+          <label for="username">Username:</label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            required
+            placeholder="Enter your username"
+          />
+        </div>
+        <div class="form-input-container">
+          <label for="password">Password:</label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            placeholder="Enter your password"
+          />
+        </div>
+        <button type="submit" class="action-button full-width">Login</button>
+      </form>
+      <p style="font-size: 16px; margin-top: 20px">
+        Don't have an account?
+        <a href="/signup" class="register-link">Sign up here</a>.
+      </p>
+    </div>
+  </body>
+</html>
